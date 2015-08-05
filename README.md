@@ -28,10 +28,10 @@ applications that use fNBT; they are only used for testing.
 - Can work with both big-endian and little-endian NBT data and systems.
 
 
-==== EXAMPLES =================================================================
+**==== EXAMPLES ====**
 - Loading a gzipped file:
 ``` csharp
-    using( FileStream stream = File.OpenRead( "somefile.nbt.gz" ) ){
+    using( FileStream stream = File.OpenRead( "somefile.nbt.gz" ) ) {
         var file = new NbtFile( stream );
         var myCompoundTag = myFile.RootTag;
     }
@@ -55,16 +55,16 @@ applications that use fNBT; they are only used for testing.
 
 - Iterating over all tags in a compound/list:
 ``` csharp
-    foreach( NbtTag tag in myCompoundTag.Values ){
+    foreach( NbtTag tag in myCompoundTag.Values ) {
         Console.WriteLine( tag.Name + " = " + tag.TagType );
     }
-    foreach( string tagName in myCompoundTag.Names ){
+    foreach( string tagName in myCompoundTag.Names ) {
         Console.WriteLine( tagName );
     }
-    for( int i = 0; i < myListTag.Count; i++ ){
+    for( int i = 0; i < myListTag.Count; i++ ) {
         Console.WriteLine( myListTag[i] );
     }
-    foreach( NbtInt intListItem in myIntList.ToArray<NbtInt>() ){
+    foreach( NbtInt intListItem in myIntList.ToArray<NbtInt>() ) {
         Console.WriteLine( listIntItem.Value );
     }
 ```
@@ -76,21 +76,21 @@ applications that use fNBT; they are only used for testing.
     serverInfo.Add( new NbtInt( "Players", 15 ) );
     serverInfo.Add( new NbtInt( "MaxPlayers", 20 ) );
     var serverFile = new NbtFile( serverInfo );
-    using( FileStream stream = File.File.OpenWrite( "server.nbt" ) ){
+    using( FileStream stream = File.File.OpenWrite( "server.nbt" ) ) {
         serverFile.SaveToFile( "server.nbt", NbtCompression.None );
     }
 ```
 
 - Constructing using collection initializer notation:
 ``` csharp
-    var compound = new NbtCompound( "root" ){
+    var compound = new NbtCompound( "root" ) {
         new NbtInt( "someInt", 123 ),
         new NbtList( "byteList" ){
             new NbtByte( 1 ),
             new NbtByte( 2 ),
             new NbtByte( 3 )
         },
-        new NbtCompound( "nestedCompound" ){
+        new NbtCompound( "nestedCompound" ) {
             new NbtDouble( "pi", 3.14 )
         }
     };
@@ -105,11 +105,7 @@ applications that use fNBT; they are only used for testing.
 - Check out unit tests in fNbt.Test for more examples.
 
 
-==== REFERENCE ================================================================
-Online reference can be found at http://www.fcraft.net/libnbt/v0.5.0/
-
-
-==== LICENSING ================================================================
+**==== LICENSING =====**
 fNbt v0.5.0+ is licensed under BSD-3clause license. See ./docs/LICENSE
 LibNbt2012 up to and including v0.4.1 kept LibNbt's original license (LGPLv3).
 LibNbt2012 makes use of the NUnit framework (www.nunit.org)

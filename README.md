@@ -1,3 +1,7 @@
+**Mono Latest** | **Windows .NET 3.5:**
+------------ | -------------
+[![Build Status](https://travis-ci.org/MineLib/fNbt.svg)](https://travis-ci.org/MineLib/fNbt) | [![Build status](https://ci.appveyor.com/api/projects/status/iryer92htr239fxj?svg=true)](https://ci.appveyor.com/project/Aragas/fnbt)
+
 Named Binary Tag (NBT) is a structured binary file format used by Minecraft.
 fNBT is a small library, written in C# for .NET 2.0+. It provides functionality
 to create, load, traverse, modify, and save NBT files and streams.

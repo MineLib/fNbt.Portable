@@ -15,7 +15,7 @@ Note that fNBT.Test.dll and nunit.framework.dll do NOT need to be bundled with
 applications that use fNBT; they are only used for testing.
 
 
-==== FEATURES =================================================================
+**==== FEATURES ====**
 - Load and save uncompressed, GZip-, and ZLib-compressed files/streams.
 - Easily create, traverse, and modify NBT documents.
 - Simple indexer-based syntax for accessing compound, list, and nested tags.
@@ -28,34 +28,34 @@ applications that use fNBT; they are only used for testing.
 - Can work with both big-endian and little-endian NBT data and systems.
 
 
-==== DOWNLOAD =================================================================
- Compiled binary:  http://fcraft.net/fnbt/fNbt_v0.5.0.zip
-
- Amalgamation (single source file):
-    Non-annotated: http://fcraft.net/fnbt/fNbt_v0.5.0.cs
-        Annotated: http://fcraft.net/fnbt/fNbt_v0.5.0_Annotated.cs
-                   (using JetBrains.Annotations, for ReSharper)
-
-
 ==== EXAMPLES =================================================================
 - Loading a gzipped file:
-    var myFile = new NbtFile();
-    myFile.LoadFromFile("somefile.nbt.gz");
-    var myCompoundTag = myFile.RootTag;
+``` csharp
+    using( FileStream stream = File.OpenRead("somefile.nbt.gz"))
+    {
+        var file = new NbtFile(stream);
+        var myCompoundTag = myFile.RootTag;
+    }
+```
 
 - Accessing tags (long/strongly-typed style):
+``` csharp
     int intVal = myCompoundTag.Get<NbtInt>("intTagsName").Value;
     string listItem = myStringList.Get<NbtString>(0).Value;
     byte nestedVal = myCompTag.Get<NbtCompound>("nestedTag")
                               .Get<NbtByte>("someByteTag")
                               .Value;
+```
 
 - Accessing tags (shortcut style):
+``` csharp
     int intVal = myCompoundTag["intTagsName"].IntValue;
     string listItem = myStringList[0].StringValue;
     byte nestedVal = myCompTag["nestedTag"]["someByteTag"].ByteValue;
+```
 
 - Iterating over all tags in a compound/list:
+``` csharp
     foreach( NbtTag tag in myCompoundTag.Values ){
         Console.WriteLine( tag.Name + " = " + tag.TagType );
     }
@@ -68,31 +68,44 @@ applications that use fNBT; they are only used for testing.
     foreach( NbtInt intListItem in myIntList.ToArray<NbtInt>() ){
         Console.WriteLine( listIntItem.Value );
     }
+```
 
 - Constructing a new document
+``` csharp
     var serverInfo = new NbtCompound("Server");
     serverInfo.Add( new NbtString("Name", "BestServerEver") );
     serverInfo.Add( new NbtInt("Players", 15) );
     serverInfo.Add( new NbtInt("MaxPlayers", 20) );
     var serverFile = new NbtFile(serverInfo);
-    serverFile.SaveToFile( "server.nbt", NbtCompression.None );
+    using( FileStream stream = File.File.OpenWrite("server.nbt"))
+    {
+        serverFile.SaveToFile( "server.nbt", NbtCompression.None );
+    }
+```
 
 - Constructing using collection initializer notation:
-    var compound = new NbtCompound("root"){
+``` csharp
+    var compound = new NbtCompound("root")
+    {
         new NbtInt("someInt", 123),
-        new NbtList("byteList") {
+        new NbtList("byteList") 
+        {
             new NbtByte(1),
             new NbtByte(2),
             new NbtByte(3)
         },
-        new NbtCompound("nestedCompound") {
+        new NbtCompound("nestedCompound") 
+        {
             new NbtDouble("pi", 3.14)
         }
     };
+```
 
 - Pretty-printing file structure:
+``` csharp
     Console.WriteLine( myFile.ToString("\t") );
     Console.WriteLine( myRandomTag.ToString("    ") );
+```
 
 - Check out unit tests in fNbt.Test for more examples.
 
@@ -105,7 +118,3 @@ Online reference can be found at http://www.fcraft.net/libnbt/v0.5.0/
 fNbt v0.5.0+ is licensed under BSD-3clause license. See ./docs/LICENSE
 LibNbt2012 up to and including v0.4.1 kept LibNbt's original license (LGPLv3).
 LibNbt2012 makes use of the NUnit framework (www.nunit.org)
-
-
-==== VERSION HISTORY ==========================================================
-See ./docs/Changelog

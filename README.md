@@ -31,19 +31,18 @@ applications that use fNBT; they are only used for testing.
 ==== EXAMPLES =================================================================
 - Loading a gzipped file:
 ``` csharp
-    using( FileStream stream = File.OpenRead("somefile.nbt.gz"))
-    {
-        var file = new NbtFile(stream);
+    using( FileStream stream = File.OpenRead( "somefile.nbt.gz" ) ){
+        var file = new NbtFile( stream );
         var myCompoundTag = myFile.RootTag;
     }
 ```
 
 - Accessing tags (long/strongly-typed style):
 ``` csharp
-    int intVal = myCompoundTag.Get<NbtInt>("intTagsName").Value;
-    string listItem = myStringList.Get<NbtString>(0).Value;
-    byte nestedVal = myCompTag.Get<NbtCompound>("nestedTag")
-                              .Get<NbtByte>("someByteTag")
+    int intVal = myCompoundTag.Get<NbtInt>( "intTagsName" ).Value;
+    string listItem = myStringList.Get<NbtString>( 0 ).Value;
+    byte nestedVal = myCompTag.Get<NbtCompound>( "nestedTag" )
+                              .Get<NbtByte>( "someByteTag" )
                               .Value;
 ```
 
@@ -62,7 +61,7 @@ applications that use fNBT; they are only used for testing.
     foreach( string tagName in myCompoundTag.Names ){
         Console.WriteLine( tagName );
     }
-    for( int i=0; i<myListTag.Count; i++ ){
+    for( int i = 0; i < myListTag.Count; i++ ){
         Console.WriteLine( myListTag[i] );
     }
     foreach( NbtInt intListItem in myIntList.ToArray<NbtInt>() ){
@@ -72,31 +71,27 @@ applications that use fNBT; they are only used for testing.
 
 - Constructing a new document
 ``` csharp
-    var serverInfo = new NbtCompound("Server");
-    serverInfo.Add( new NbtString("Name", "BestServerEver") );
-    serverInfo.Add( new NbtInt("Players", 15) );
-    serverInfo.Add( new NbtInt("MaxPlayers", 20) );
-    var serverFile = new NbtFile(serverInfo);
-    using( FileStream stream = File.File.OpenWrite("server.nbt"))
-    {
+    var serverInfo = new NbtCompound( "Server" );
+    serverInfo.Add( new NbtString( "Name", "BestServerEver" ) );
+    serverInfo.Add( new NbtInt( "Players", 15 ) );
+    serverInfo.Add( new NbtInt( "MaxPlayers", 20 ) );
+    var serverFile = new NbtFile( serverInfo );
+    using( FileStream stream = File.File.OpenWrite( "server.nbt" ) ){
         serverFile.SaveToFile( "server.nbt", NbtCompression.None );
     }
 ```
 
 - Constructing using collection initializer notation:
 ``` csharp
-    var compound = new NbtCompound("root")
-    {
-        new NbtInt("someInt", 123),
-        new NbtList("byteList") 
-        {
-            new NbtByte(1),
-            new NbtByte(2),
-            new NbtByte(3)
+    var compound = new NbtCompound( "root" ){
+        new NbtInt( "someInt", 123 ),
+        new NbtList( "byteList" ){
+            new NbtByte( 1 ),
+            new NbtByte( 2 ),
+            new NbtByte( 3 )
         },
-        new NbtCompound("nestedCompound") 
-        {
-            new NbtDouble("pi", 3.14)
+        new NbtCompound( "nestedCompound" ){
+            new NbtDouble( "pi", 3.14 )
         }
     };
 ```

@@ -105,7 +105,9 @@ applications that use fNBT; they are only used for testing.
 - Check out unit tests in fNbt.Test for more examples.
 
 
+
 **==== LICENSING =====**
+
 fNbt v0.5.0+ is licensed under BSD-3clause license. See ./docs/LICENSE
 LibNbt2012 up to and including v0.4.1 kept LibNbt's original license (LGPLv3).
 LibNbt2012 makes use of the NUnit framework (www.nunit.org)

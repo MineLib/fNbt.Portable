@@ -64,7 +64,6 @@ namespace fNbt.Test {
         #region Loading Big Nbt Test File
 
         [Test]
-        [ExpectedException(typeof(AssertionException))] // TODO: Strange bug with TestFiles/bigtest.nbt
         public void LoadingBigFileUncompressed() {
             using( FileStream stream = File.OpenRead( "TestFiles/bigtest.nbt" ) ) {
                 NbtFile file = new NbtFile();
@@ -98,7 +97,6 @@ namespace fNbt.Test {
 
 
         [Test]
-        [ExpectedException(typeof(AssertionException))] // TODO: Strange bug with TestFiles/bigtest.nbt
         public void LoadingBigFileBuffer() {
             byte[] fileBytes = File.ReadAllBytes( "TestFiles/bigtest.nbt" );
             var file = new NbtFile();
@@ -109,7 +107,6 @@ namespace fNbt.Test {
 
 
         [Test]
-        [ExpectedException(typeof(AssertionException))] // TODO: Strange bug with TestFiles/bigtest.nbt
         public void LoadingBigFileStream() {
             byte[] fileBytes = File.ReadAllBytes( "TestFiles/bigtest.nbt" );
             using( MemoryStream ms = new MemoryStream( fileBytes ) ) {

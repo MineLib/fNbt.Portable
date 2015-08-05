@@ -1,0 +1,18 @@
+language: csharp
+mono:
+  - latest
+
+solution: fNbt.sln
+
+install:
+  - nuget restore fNbt.sln
+  - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
+  
+script:
+  - xbuild /p:Configuration=Release fNbt.sln
+  - xbuild /p:Configuration=Debug fNbt.sln
+  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./bin/Debug/fNbt.Test.dll
+
+notifications:
+  email:
+    on_success: always

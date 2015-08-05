@@ -1,8 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
-using fNbt;
+using System.Reflection;
 
 namespace fNbt.Serialization
 {
@@ -96,15 +95,15 @@ namespace fNbt.Serialization
                 var compound = new NbtCompound(tagName);
 
                 if (value == null) return compound;
-                var nameAttributes = Attribute.GetCustomAttributes(value.GetType(), typeof (TagNameAttribute));
+                var nameAttributes = new List<Attribute>( typeof(TagNameAttribute).GetTypeInfo().GetCustomAttributes() );
 
-                if (nameAttributes.Length > 0)
+                if (nameAttributes.Count > 0)
                     compound = new NbtCompound(((TagNameAttribute)nameAttributes[0]).Name);
 
-                var properties = Type.GetProperties().Where(p => !Attribute.GetCustomAttributes(p,
-                    typeof (NbtIgnoreAttribute)).Any());
+                var properties = Type.GetRuntimeProperties().Where(p => !typeof(NbtIgnoreAttribute).GetTypeInfo().GetCustomAttributes().Any());
+                //var properties = GetProperty();
 
-                foreach (var property in properties)
+                foreach (PropertyInfo property in properties)
                 {
                     if (!property.CanRead)
                         continue;
@@ -112,9 +111,9 @@ namespace fNbt.Serialization
                     NbtTag tag = null;
 
                     string name = property.Name;
-                    nameAttributes = Attribute.GetCustomAttributes(property, typeof (TagNameAttribute));
-                    var ignoreOnNullAttribute = Attribute.GetCustomAttribute(property, typeof(IgnoreOnNullAttribute));
-                    if (nameAttributes.Length != 0)
+                    nameAttributes = new List<Attribute>( typeof(TagNameAttribute).GetTypeInfo().GetCustomAttributes() );
+                    var ignoreOnNullAttribute = typeof(IgnoreOnNullAttribute).GetTypeInfo().GetCustomAttributes();
+                    if (nameAttributes.Count != 0)
                         name = ((TagNameAttribute)nameAttributes[0]).Name;
 
                     var innerSerializer = new NbtSerializer(property.PropertyType);
@@ -123,7 +122,7 @@ namespace fNbt.Serialization
                     if (propValue == null)
                     {
                         if (ignoreOnNullAttribute != null) continue;
-                        if (property.PropertyType.IsValueType)
+                        if (typeof(ValueType).GetTypeInfo().IsAssignableFrom(property.PropertyType.GetTypeInfo()))
                         {
                             propValue = Activator.CreateInstance(property.PropertyType);
                         }
@@ -141,7 +140,7 @@ namespace fNbt.Serialization
         
         public object Deserialize(NbtTag value, bool skipInterfaceCheck = false)
         {
-            if (!skipInterfaceCheck && typeof(INbtSerializable).IsAssignableFrom(Type))
+            if (!skipInterfaceCheck && typeof(INbtSerializable).GetTypeInfo().IsAssignableFrom(Type.GetTypeInfo()))
             {
                 var instance = (INbtSerializable)Activator.CreateInstance(Type);
                 instance.Deserialize(value);
@@ -205,22 +204,21 @@ namespace fNbt.Serialization
             else if(value is NbtCompound)
             {
                 var compound = value as NbtCompound;
-                var properties = Type.GetProperties().Where(p =>
-                    !Attribute.GetCustomAttributes(p, typeof(NbtIgnoreAttribute)).Any());
+                var properties = Type.GetRuntimeProperties().Where(p => typeof(TagNameAttribute).GetTypeInfo().GetCustomAttributes().Any() );
                 var resultObject = Activator.CreateInstance(Type);
                 foreach (var property in properties)
                 {
                     if (!property.CanWrite)
                         continue;
                     string name = property.Name;
-                    var nameAttributes = Attribute.GetCustomAttributes(property, typeof(TagNameAttribute));
+                    var nameAttributes = new List<Attribute>(typeof(TagNameAttribute).GetTypeInfo().GetCustomAttributes());
 
-                    if (nameAttributes.Length != 0)
+                    if (nameAttributes.Count != 0)
                         name = ((TagNameAttribute)nameAttributes[0]).Name;
                     var node = compound.Tags.SingleOrDefault(a => a.Name == name);
                     if (node == null) continue;
                     object data;
-                    if (typeof(INbtSerializable).IsAssignableFrom(property.PropertyType))
+                    if (typeof(INbtSerializable).GetTypeInfo().IsAssignableFrom(property.PropertyType.GetTypeInfo()))
                     {
                         data = Activator.CreateInstance(property.PropertyType);
                         ((INbtSerializable)data).Deserialize(node);

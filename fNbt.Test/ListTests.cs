@@ -133,25 +133,30 @@ namespace fNbt.Test {
             writtenFile.RootTag.Add( writtenList );
 
             // test saving
-            writtenFile.SaveToFile( fileName, NbtCompression.GZip );
+            using( FileStream fileStream = File.Create( fileName ) ) {
+                writtenFile.SaveToStream( fileStream, NbtCompression.GZip );
+                fileStream.Seek(0, SeekOrigin.Begin);
 
-            // test loading
-            NbtFile readFile = new NbtFile( fileName );
+                // test loading
+                NbtFile readFile = new NbtFile( fileStream );
 
-            // check contents of loaded file
-            Assert.NotNull( readFile.RootTag );
-            Assert.IsInstanceOf<NbtList>( readFile.RootTag["Entities"] );
-            NbtList readList = (NbtList)readFile.RootTag["Entities"];
-            Assert.AreEqual( readList.ListType, writtenList.ListType );
-            Assert.AreEqual( readList.Count, writtenList.Count );
 
-            // check .ToArray
-            CollectionAssert.AreEquivalent( readList, readList.ToArray() );
-            CollectionAssert.AreEquivalent( readList, readList.ToArray<NbtInt>() );
+                // check contents of loaded file
+                Assert.NotNull( readFile.RootTag );
+                Assert.IsInstanceOf<NbtList>( readFile.RootTag["Entities"] );
+                NbtList readList = (NbtList)readFile.RootTag["Entities"];
+                Assert.AreEqual( readList.ListType, writtenList.ListType );
+                Assert.AreEqual( readList.Count, writtenList.Count );
 
-            // check contents of loaded list
-            for( int i = 0; i < elements; i++ ) {
-                Assert.AreEqual( readList.Get<NbtInt>( i ).Value, writtenList.Get<NbtInt>( i ).Value );
+
+                // check .ToArray
+                CollectionAssert.AreEquivalent( readList, readList.ToArray() );
+                CollectionAssert.AreEquivalent( readList, readList.ToArray<NbtInt>() );
+
+                // check contents of loaded list
+                for( int i = 0; i < elements; i++ ) {
+                    Assert.AreEqual( readList.Get<NbtInt>( i ).Value, writtenList.Get<NbtInt>( i ).Value );
+                }
             }
         }
 
@@ -159,7 +164,7 @@ namespace fNbt.Test {
         [TearDown]
         public void ListTestsTearDown() {
             if( Directory.Exists( TempDir ) ) {
-                foreach( var file in Directory.GetFiles( TempDir ) ) {
+                foreach( string file in Directory.GetFiles( TempDir ) ) {
                     File.Delete( file );
                 }
                 Directory.Delete( TempDir );

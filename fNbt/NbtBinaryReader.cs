@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+
 using JetBrains.Annotations;
 
 namespace fNbt {
@@ -83,7 +84,7 @@ namespace fNbt {
                 throw new NbtFormatException( "Negative string length given!" );
             }
             byte[] stringData = ReadBytes( length );
-            return Encoding.UTF8.GetString( stringData );
+            return Encoding.UTF8.GetString( stringData, 0, stringData.Length );
         }
 
 
